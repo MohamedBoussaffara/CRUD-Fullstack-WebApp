@@ -1,0 +1,90 @@
+<div class="d-flex justify-content-center">
+  <h3 class="m-4">Create Student</h3>
+</div>
+<div class="row justify-content-center">
+  <div [hidden]="submitted" style="width: 400px;">
+    <form [formGroup]="studentForm" (ngSubmit)="studentFormRef.form.valid && onSubmit()" #studentFormRef="ngForm"
+      novalidate>
+
+      <!-- Student Name -->
+      <div class="form-group mb-4">
+        <label for="studentName" class="form-label fw-bold">
+          Student Name <span class="text-danger">*</span>
+        </label>
+        <input type="text" id="studentName" class="form-control" formControlName="name"
+          [class.is-invalid]="studentName?.invalid && ((studentName?.dirty && studentName?.touched) || studentFormRef.submitted)"
+          placeholder="Enter student full name" autocomplete="off" />
+        <div *ngIf="studentName?.invalid && ((studentName?.dirty && studentName?.touched) || studentFormRef.submitted)" class="invalid-feedback">
+          <span *ngIf="studentName?.errors?.['required']">
+            Student name is required
+          </span>
+          <span *ngIf="studentName?.errors?.['minlength']">
+            Name must be at least {{ studentName?.errors?.['minlength']?.requiredLength }} characters
+          </span>
+        </div>
+      </div>
+
+      <!-- Student Email -->
+      <div class="form-group mb-4">
+        <label for="studentEmail" class="form-label fw-bold">
+          Student Email <span class="text-danger">*</span>
+        </label>
+        <input type="email" id="studentEmail" class="form-control" formControlName="email"
+          [class.is-invalid]="studentEmail?.invalid && ((studentEmail?.dirty && studentEmail?.touched) || studentFormRef.submitted)"
+          placeholder="Enter student email address" autocomplete="off" />
+        <div *ngIf="studentEmail?.invalid && (studentEmail?.dirty && studentEmail?.touched  || studentFormRef.submitted)"
+          class="invalid-feedback">
+          <span *ngIf="studentEmail?.errors?.['required']">
+            Email address is required
+          </span>
+          <span *ngIf="studentEmail?.errors?.['email']">
+            Please enter a valid email address
+          </span>
+          <span *ngIf="studentEmail?.errors?.['duplicated']">
+            This email is already registered
+          </span>
+        </div>
+      </div>
+
+      <!-- Student Branch -->
+      <div class="form-group mb-4">
+        <label for="studentBranch" class="form-label fw-bold">
+          Student Branch <span class="text-danger">*</span>
+        </label>
+        <select id="studentBranch" class="form-control" formControlName="branch"
+          [class.is-invalid]="studentBranch?.invalid && ((studentBranch?.dirty && studentBranch?.touched) || studentFormRef.submitted)">
+          <option value="" selected>Select a branch</option>
+          <option value="LCS">LCS</option>
+          <option value="LCE">LCE</option>
+          <option value="LBC">LBC</option>
+        </select>
+        <div *ngIf="studentBranch?.invalid && ((studentBranch?.dirty && studentBranch?.touched)  || studentFormRef.submitted)"
+          class="invalid-feedback">
+          Please select a student branch
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <button type="submit" class="btn btn-success px-4" [disabled]="isLoading">
+          <span *ngIf="!isLoading">
+            <i class="fas fa-save mr-2"></i>Create Student
+          </span>
+          <span *ngIf="isLoading">
+            <i class="fas fa-spinner fa-spin mr-2"></i>Creating...
+          </span>
+        </button>&nbsp;
+        <button type="button" class="btn btn-outline-secondary px-4" (click)="resetStudentForm(studentFormRef)">
+          <i class="fas fa-times"></i>Cancel
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+<div class="row justify-content-center">
+  <div [hidden]="!submitted">
+    <h4>Student Added SuccessFully!</h4>
+    <button (click)="resetStudentForm(studentFormRef); submitted = false" class='btn btn-primary'>Add More Student</button>
+  </div>
+</div>

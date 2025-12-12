@@ -1,0 +1,140 @@
+<div class="container-fluid">
+  <!-- Header -->
+  <div class="d-flex justify-content-center">
+    <h3 class="m-4">Student Management</h3>
+  </div>
+
+  <!-- Success Message -->
+  <div *ngIf="deleteMessage" class="row mb-3">
+    <div class="col">
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle mr-2"></i>
+        <strong>Success!</strong> Student deleted successfully.
+        <button type="button" class="close" (click)="deleteMessage = false" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Table -->
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <div class="card-body">
+          <table class="table table-hover table-sm" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+            <thead class="thead-light">
+              <tr>
+                <th>Student Name</th>
+                <th>Student Email</th>
+                <th>Student Branch</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+          
+              <tr *ngFor="let student of students">
+                <td>{{student.name}}</td>
+                <td>{{student.email}}</td>
+                <td>{{student.branch}}</td>
+                <td>
+                  <button (click)="deleteStudent(student.id)" class='btn btn-danger btn-sm'>
+                    Delete
+                  </button>&nbsp;
+                  <button (click)="openUpdateModal(updateModal, student)" class='btn btn-info btn-sm'>
+                    Update
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Update Modal Template -->
+<ng-template #updateModal let-modal>
+  <div class="modal-header bg-primary text-white">
+    <h5 class="modal-title">
+      <i class="fas fa-edit mr-2"></i>Update Student
+    </h5>
+    <button type="button" class="close text-white" (click)="closeModal()" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  
+  <form [formGroup]="studentUpdateForm" (ngSubmit)="studentFormRef.form.valid && updateStudent()" #studentFormRef="ngForm" novalidate>
+    <div class="modal-body">
+      
+      <input type="hidden" formControlName="id">
+      
+      <!-- Student Name -->
+      <div class="form-group">
+        <label for="studentName" class="font-weight-bold">Student Name <span class="text-danger">*</span></label>
+        <input
+          type="text"
+          id="studentName"
+          class="form-control"
+          formControlName="name"
+          [class.is-invalid]="studentName?.invalid && studentName?.dirty && studentName?.touched"
+          placeholder="Enter student name"
+        />
+        <div *ngIf="studentName?.invalid && studentName?.dirty && studentName?.touched" class="invalid-feedback">
+          <span *ngIf="studentName?.errors?.['required']">Student name is required</span>
+          <span *ngIf="studentName?.errors?.['minlength']">
+            Student name must be at least {{ studentName?.errors?.['minlength']?.requiredLength }} characters
+          </span>
+        </div>
+      </div>
+
+      <!-- Student Email -->
+      <div class="form-group">
+        <label for="studentEmail" class="font-weight-bold">Student Email <span class="text-danger">*</span></label>
+        <input
+          type="email"
+          id="studentEmail"
+          class="form-control"
+          formControlName="email"
+          [class.is-invalid]="studentEmail?.invalid && studentEmail?.dirty && studentEmail?.touched"
+          placeholder="Enter student email"
+        />
+        <div *ngIf="studentEmail?.invalid && studentEmail?.dirty && studentEmail?.touched" class="invalid-feedback">
+          <span *ngIf="studentEmail?.errors?.['required']">Email is required</span>
+          <span *ngIf="studentEmail?.errors?.['email']">Please enter a valid email address</span>
+          <span *ngIf="studentEmail?.errors?.['duplicated']">This email is already registered</span>
+        </div>
+      </div>
+
+      <!-- Student Branch -->
+      <div class="form-group">
+        <label for="studentBranch" class="font-weight-bold">Student Branch <span class="text-danger">*</span></label>
+        <select
+          id="studentBranch"
+          class="form-control"
+          formControlName="branch"
+          [class.is-invalid]="studentBranch?.invalid && studentBranch?.touched"
+        >
+          <option value="" disabled selected>Select a branch</option>
+          <option value="LCS">LCS</option>
+          <option value="LCE">LCE</option>
+          <option value="LBC">LBC</option>
+        </select>
+        <div *ngIf="studentBranch?.invalid && studentBranch?.dirty && studentBranch?.touched" class="invalid-feedback">
+          Please select a student branch
+        </div>
+      </div>
+
+    </div>
+    
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="closeModal()">
+        <i class="fas fa-times mr-1"></i> Cancel
+      </button>
+      <button type="submit" class="btn btn-primary">
+        <i class="fas fa-save mr-1"></i> Update Student
+      </button>
+    </div>
+  </form>
+</ng-template>
